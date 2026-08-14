@@ -1,0 +1,8 @@
+[Unit]
+Description=Performs a system backup via rclone
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/opt/rclone-backup/rclone-backup.zsh
+

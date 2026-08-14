@@ -1,0 +1,13 @@
+#! /usr/bin/env zsh
+
+# Go through each jail:
+for JAIL in $(fail2ban-client status | sed -n "s/,//g; s/^.*Jail list:[[:space:]]*//p"); do
+  if [[ $# == 2 ]] && [[ $1 == "-b" ]]; then
+    fail2ban-client set ${JAIL} banip ${2}
+  elif [[ $# == 2 ]] && [[ $1 == "-u" ]]; then
+    fail2ban-client set ${JAIL} unbanip ${2}
+  else
+    fail2ban-client status ${JAIL}
+  fi
+done
+

@@ -1,0 +1,35 @@
+### General
+###############################################################################
+
+# Do not backup vim plugins, most are submodules anyways:
+**/pack/plugins
+
+
+
+### PiHole
+###############################################################################
+
+# Queries' database can become huge, and it's not needed for a restore:
+/etc/pihole/pihole-FTL.db
+
+
+
+### Ruby on Rails
+###############################################################################
+
+# We definitely do not need the bundle:
+**/vendor/bundle/
+
+# Same for the tmp folder:
+**/rails/*/tmp/
+
+# Also... Skip the credentials.
+**/rails/*/config/*.key
+**/rails/*/config/credentials/*.ke
+
+# Same for gems/ruby versions installed on a per-user basis:
+/home/rails/*/.bundle
+/home/rails/*/.cache
+/home/rails/*/.passenger
+/home/rails/*/.rbenv
+
