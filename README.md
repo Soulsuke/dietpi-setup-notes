@@ -8,7 +8,7 @@ Table of contents:
 <!-- vim-markdown-toc GFM -->
 
 - [Introduction](#introduction)
-- [First boot: tui confiuration](#first-boot-tui-confiuration)
+- [First boot: tui configuration](#first-boot-tui-configuration)
 - [Second boot: we're actually home](#second-boot-were-actually-home)
     - [Basic config](#basic-config)
         - [Turn off leds](#turn-off-leds)
@@ -48,7 +48,7 @@ It is advised to use a SanDisk 64GB MAX ENDURANCE card or equivalent.
 
 
 
-## First boot: tui confiuration
+## First boot: tui configuration
 
 On the first boot after flashing the image you'll be greeted by a tui to setup
 a few things:  
