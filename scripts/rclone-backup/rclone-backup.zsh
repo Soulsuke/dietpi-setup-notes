@@ -104,11 +104,6 @@ for s in ${SERVICES_TO_STOP}; do
 done
 print ""
 
-# Sync, just to be sure:
-print "Syncing..."
-sync
-print ""
-
 # Perform the rsync command again, so everything is clean:
 print "Performing final copy with stopped services..."
 rsync -aHAX \
@@ -139,8 +134,12 @@ ${RCLONE_BIN} sync \
 print ""
 
 # Finally, unmount the tmpfs folder to free up the data:
-print "Syncing and unmounting tmpfs..."
-sync
-sync
-umount "${BCK_FOLDER_BASE}"
+print "Unmounting tmpfs..."
+CNT=0
+while mountpoint -q "${BCK_FOLDER_BASE}"; do
+  CNT=$((CNT + 1))
+  print " - Attempt 1"
+  umount "${BCK_FOLDER_BASE}"
+done
+print " - Done!"
 
