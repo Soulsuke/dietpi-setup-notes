@@ -302,7 +302,7 @@ WantedBy=timers.target
 
 Now all that's left to do is to enable the timer:  
  - `sudo systemctl daemon-reload`  
- - `sudo systemctl enable --now certbot-renew.service`  
+ - `sudo systemctl enable --now certbot-renew.timer`  
 
 
 
