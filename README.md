@@ -227,7 +227,7 @@ Now we can add jails using it to our nginx log. As an example:
 echo '[nginx-public]
 enabled = true
 backend = auto
-port = 40,443
+port = 80,443
 filter = nginx-4xx
 logpath = /var/log/nginx/public_access.log
 # Max 3 attempts every 30 minutes with a 1 day ban.
@@ -239,7 +239,7 @@ bantime = 1d
 echo '[nginx-private]
 enabled = true
 backend = auto
-port = 40,443
+port = 80,443
 filter = nginx-4xx
 logpath = /var/log/nginx/private_access.log
 # Max 3 attempts every 30 minutes with a 1 day ban.
