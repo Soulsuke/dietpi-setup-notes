@@ -13,7 +13,8 @@ do
   elif [[ $# == 1 ]] && [[ $1 == "-i" ]]; then
     fail2ban-client status ${JAIL} | grep -E "Status|Currently b|Banned I"
   else
-    fail2ban-client status ${JAIL} | grep -E "Status|Currently b"
+    fail2ban-client status ${JAIL} | \
+      grep -E "Status|Currently b|Total b|Total b"
   fi
 done
 
