@@ -224,6 +224,18 @@ failregex = ^<HOST> - .*" 4[0-9][0-9] .*
 
 Now we can add jails using it to our nginx log. As an example:  
 ```sh
+echo '[nginx-default-444]
+enabled = true
+backend = auto
+port = 80,443
+filter = nginx-4xx
+logpath = /var/log/nginx/default-444_access.log
+# Max 1 attempt every 30 minutes with a 1 week ban.
+maxretry = 1
+findtime = 1800
+bantime = 1w
+' | sudo tee /etc/fail2ban/jail.d/nginx-default-444.local
+
 echo '[nginx-public]
 enabled = true
 backend = auto
@@ -242,8 +254,8 @@ backend = auto
 port = 80,443
 filter = nginx-4xx
 logpath = /var/log/nginx/private_access.log
-# Max 3 attempts every 30 minutes with a 1 day ban.
-maxretry = 3
+# Max 1 attempt every 30 minutes with a 1 day ban.
+maxretry = 1
 findtime = 1800
 bantime = 1d
 ' | sudo tee /etc/fail2ban/jail.d/nginx-private.local

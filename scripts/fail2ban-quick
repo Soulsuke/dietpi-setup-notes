@@ -10,8 +10,10 @@ do
     fail2ban-client set ${JAIL} unbanip ${2}
   elif [[ $# == 1 ]] && [[ $1 == "-f" ]]; then
     fail2ban-client status ${JAIL}
-  else
+  elif [[ $# == 1 ]] && [[ $1 == "-i" ]]; then
     fail2ban-client status ${JAIL} | grep -E "Status|Currently b|Banned I"
+  else
+    fail2ban-client status ${JAIL} | grep -E "Status|Currently b"
   fi
 done
 
