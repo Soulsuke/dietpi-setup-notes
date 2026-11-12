@@ -9,8 +9,8 @@
 ### PiHole
 ###############################################################################
 
-# Queries' database can become huge, and it's not needed for a restore:
-/etc/pihole/pihole-FTL.db
+# Let's ignore the whole folder, as we'll use teleporter for its backup:
+/etc/pihole
 
 
 
@@ -18,10 +18,10 @@
 ###############################################################################
 
 # We definitely do not need the bundle:
-**/vendor/bundle/
+**/vendor/bundle
 
 # Same for the tmp folder:
-**/rails/*/tmp/
+**/rails/*/tmp
 
 # Also... Skip the credentials.
 **/rails/*/config/*.key

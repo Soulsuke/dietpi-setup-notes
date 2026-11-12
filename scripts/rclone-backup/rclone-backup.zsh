@@ -38,10 +38,11 @@ RSYNC_EXCLUDE_FROM="/opt/rclone-backup/exclusion_list"
 
 # Services to stop:
 SERVICES_TO_STOP=(
-  "nginx"
-  "pihole-FTL"
   "vaultwarden"
 )
+
+# Pi-hole's FTL binary:
+FTL="pihole-FTL"
 
 # Rclone binary location:
 RCLONE_BIN="rclone"
@@ -121,6 +122,15 @@ for s in ${SERVICES_TO_STOP}; do
   systemctl start "${s}"
 done
 print ""
+
+# Once done, add in pihole's backup... If it's installed:
+if [[ $(command -v "${FTL}") ]]; then
+  print "Running ${FTL}'s teleporter..."
+  cd "${BCK_FOLDER_DAILY}"
+  "${FTL}" --teleporter
+  cd - &> /dev/null
+  print ""
+fi
 
 # Now back it all up via rclone:
 print "Running rclone..."
