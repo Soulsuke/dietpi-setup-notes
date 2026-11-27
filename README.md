@@ -24,15 +24,15 @@ Table of contents:
         - [DHCP](#dhcp)
         - [Manage blocklists](#manage-blocklists)
     - [Vaultwarden](#vaultwarden)
-    - [Jellyfin](#jellyfin)
-        - [Disable transcoding](#disable-transcoding)
-        - [Configure media library ACL](#configure-media-library-acl)
     - [Ruby on rails application](#ruby-on-rails-application)
         - [Phusion Passenger](#phusion-passenger)
         - [rbenv](#rbenv)
         - [Configure logrotate](#configure-logrotate)
         - [Configure fail2ban](#configure-fail2ban-1)
         - [Tweaks to reduce IO](#tweaks-to-reduce-io)
+    - [Jellyfin](#jellyfin)
+        - [Disable transcoding](#disable-transcoding)
+        - [Configure media library ACL](#configure-media-library-acl)
 - [For the daring: cloud backups](#for-the-daring-cloud-backups)
     - [Configure rclone](#configure-rclone)
     - [The backup itself](#the-backup-itself)
@@ -401,55 +401,6 @@ We can now finally restart vaultwarden:
 
 
 
-### Jellyfin
-
-Installed by the software center:  
- - `sudo dietpi-software install jellyfin`  
-
-Most of its data is stored in `/mnt/dietpi_userdata/jellyfin`  
-
-Edit `/etc/jellyfin/network.xml` and set the same subroute configured in
-nginx:  
-```sh
-sudo systemctl stop jellyfin
-sudo sed -i 's,<BaseUrl>.*,<BaseUrl>/jellyfin</BaseUrl>,' /etc/jellyfin/network.xml
-sudo systemctl start jellyfin
-```
-
-After that access is done via nginx, no other config needed.  
-
-#### Disable transcoding
-
-This is quite important as hardware transcoding doesn't sit well with some
-Pis.  
-Open Jellyfin's dashboard as an admin, the navigate to users, then edit one and
-be sure to uncheck:  
- - allow Allow audio playback that requires transcoding  
- - Allow video playback that requires transcoding  
-
-#### Configure media library ACL
-
-We want to give jellyfin total control over its media library folder, and to
-do that we'll create a group called `media` and use the acl to make the library
-group-writable:  
- - `sudo apt install acl`  
- - `sudo groupadd media`  
- - `sudo usermod -aG media jellyfin`  
-
-Now pick a media folder, for instance we'll use
-`/mnt/dietpi_userdata/jellyfin_media`, and set the right group, permissions
-and acl for future files:  
-```sh
-chgrp -R media /mnt/dietpi_userdata/jellyfin_media
-find /mnt/dietpi_userdata/jellyfin_media -type d -exec chmod g+s {} +
-setfacl -R -m g:media:rwX /mnt/dietpi_userdata/jellyfin_media
-setfacl -R -d -m g:media:rwX /mnt/dietpi_userdata/jellyfin_media
-```
-Afterwards, new files placed in there will have the right flags.  
-Provided they haven't been copied them preserving previous attributes.  
-
-
-
 ### Ruby on rails application
 
 Why not? This is mostyl a reminder for myself :p  
@@ -568,6 +519,55 @@ WantedBy=multi-user.target
 Then we can activate and start it:  
  - `sudo systemctl daemon-reload`  
  - `sudo systemctl enable --now create-rails-log-file.service`  
+
+
+
+### Jellyfin
+
+Installed by the software center:  
+ - `sudo dietpi-software install jellyfin`  
+
+Most of its data is stored in `/mnt/dietpi_userdata/jellyfin`  
+
+Edit `/etc/jellyfin/network.xml` and set the same subroute configured in
+nginx:  
+ - `sudo systemctl stop jellyfin`  
+ - `sudo sed -i 's,<BaseUrl>.*,<BaseUrl>/jellyfin</BaseUrl>,' /etc/jellyfin/network.xml`  
+ - `sudo systemctl start jellyfin`  
+
+After that access is done via nginx, no other config needed.  
+
+
+
+#### Disable transcoding
+
+This is quite important as hardware transcoding doesn't sit well with some
+Pis.  
+Open Jellyfin's dashboard as an admin, the navigate to users, then edit one and
+be sure to uncheck:  
+ - allow Allow audio playback that requires transcoding  
+ - Allow video playback that requires transcoding  
+
+
+
+#### Configure media library ACL
+
+We want to give jellyfin total control over its media library folder, and to
+do that we'll create a group called `media` and use the acl to make the library
+group-writable:  
+ - `sudo apt install acl`  
+ - `sudo groupadd media`  
+ - `sudo usermod -aG media jellyfin`  
+
+Now pick a media folder, for instance we'll use
+`/mnt/dietpi_userdata/jellyfin_media`, and set the right group, permissions
+and acl for future files:  
+ - `chgrp -R media /mnt/dietpi_userdata/jellyfin_media`  
+ - `find /mnt/dietpi_userdata/jellyfin_media -type d -exec chmod g+s {} +`  
+ - `setfacl -R -m g:media:rwX /mnt/dietpi_userdata/jellyfin_media`  
+ - `setfacl -R -d -m g:media:rwX /mnt/dietpi_userdata/jellyfin_media`  
+Afterwards, new files placed in there will have the right flags.  
+Provided they haven't been copied them preserving previous attributes.  
 
 
 
