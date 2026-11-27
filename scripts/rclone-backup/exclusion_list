@@ -15,6 +15,9 @@
 # Nor the metadata folder:
 **/dietpi_userdata/jellyfin/metadata
 
+# Nor the cache:
+**/dietpi_userdata/jellyfin/cache
+
 
 
 ### Pi-Hole
