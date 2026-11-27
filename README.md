@@ -20,10 +20,13 @@ Table of contents:
         - [Self signed certificate](#self-signed-certificate)
         - [certbot](#certbot)
         - [ddclient](#ddclient)
-    - [PiHole](#pihole)
+    - [Pi-Hole](#pi-hole)
         - [DHCP](#dhcp)
         - [Manage blocklists](#manage-blocklists)
     - [Vaultwarden](#vaultwarden)
+    - [Jellyfin](#jellyfin)
+        - [Disable transcoding](#disable-transcoding)
+        - [Configure media library ACL](#configure-media-library-acl)
     - [Ruby on rails application](#ruby-on-rails-application)
         - [Phusion Passenger](#phusion-passenger)
         - [rbenv](#rbenv)
@@ -136,13 +139,13 @@ title = dietpi nginx
 description = nginx http (80) and https (443)
 ports = 80,443/tcp
 
-[dietpi pihole dns]
-title = dietpi pihhole dns
+[dietpi pi-hole dns]
+title = dietpi pi-hole dns
 description = pihole dns (53)
 ports = 53/tcp|53/udp
 
-[dietpi pihole dhcp]
-title = dietpi pihole dhcp
+[dietpi pi-hole dhcp]
+title = dietpi pi-hole dhcp
 description = pihole dhcp (67)
 ports = 67/udp
 
@@ -158,10 +161,10 @@ Enable what you may need:
     -`sudo ufw allow "dietpi ssh"`  
  - http/https from anywhere:  
     - `sudo ufw allow dietpi nginx"`  
- - pihole dns from local network only:  
-    - `sudo ufw allow from 192.168.1.0/24 to any app "dietpi pihole dns"`  
- - pihole dhcp has to be from anywhere:
-    - `sudo ufw allow from any to any app "dietpi pihole dhcp"`  
+ - pi-hole dns from local network only:  
+    - `sudo ufw allow from 192.168.1.0/24 to any app "dietpi pi-hole dns"`  
+ - pi-hole dhcp has to be from anywhere:
+    - `sudo ufw allow from any to any app "dietpi pi-hole dhcp"`  
 
 
 
@@ -187,7 +190,7 @@ it all now so it'll be server under a specific location, so it won't be a pain
 to change it later on.  
 
 Refer to the `nginx` folder, as it contains both samples on how to configure
-subroutes for pihole as well as a good starting point for ssl security
+subroutes for pi-hole as well as a good starting point for ssl security
 headers.  
 
 First off setup dhparam:  
@@ -335,7 +338,7 @@ Enable the systemd service to make it work:
 
 
 
-### PiHole
+### Pi-Hole
 
 We're gonna serve pihole under nginx's /pihole location. You can refer to
 `nginx/sites-available/private.conf`.  
@@ -395,6 +398,55 @@ Now, what you need to do is:
 
 We can now finally restart vaultwarden:  
  - `sudo systemctl enable --now vaultwarden`  
+
+
+
+### Jellyfin
+
+Installed by the software center:  
+ - `sudo dietpi-software install jellyfin`  
+
+Most of its data is stored in `/mnt/dietpi_userdata/jellyfin`  
+
+Edit `/etc/jellyfin/network.xml` and set the same subroute configured in
+nginx:  
+```sh
+sudo systemctl stop jellyfin
+sudo sed -i 's,<BaseUrl>.*,<BaseUrl>/jellyfin</BaseUrl>,' /etc/jellyfin/network.xml
+sudo systemctl start jellyfin
+```
+
+After that access is done via nginx, no other config needed.  
+
+#### Disable transcoding
+
+This is quite important as hardware transcoding doesn't sit well with some
+Pis.  
+Open Jellyfin's dashboard as an admin, the navigate to users, then edit one and
+be sure to uncheck:  
+ - allow Allow audio playback that requires transcoding  
+ - Allow video playback that requires transcoding  
+
+#### Configure media library ACL
+
+We want to give jellyfin total control over its media library folder, and to
+do that we'll create a group called `media` and use the acl to make the library
+group-writable:  
+ - `sudo apt install acl`  
+ - `sudo groupadd media`  
+ - `sudo usermod -aG media jellyfin`  
+
+Now pick a media folder, for instance we'll use
+`/mnt/dietpi_userdata/jellyfin_media`, and set the right group, permissions
+and acl for future files:  
+```sh
+chgrp -R media /mnt/dietpi_userdata/jellyfin_media
+find /mnt/dietpi_userdata/jellyfin_media -type d -exec chmod g+s {} +
+setfacl -R -m g:media:rwX /mnt/dietpi_userdata/jellyfin_media
+setfacl -R -d -m g:media:rwX /mnt/dietpi_userdata/jellyfin_media
+```
+Afterwards, new files placed in there will have the right flags.  
+Provided they haven't been copied them preserving previous attributes.  
 
 
 

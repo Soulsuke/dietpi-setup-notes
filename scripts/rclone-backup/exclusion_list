@@ -6,7 +6,18 @@
 
 
 
-### PiHole
+### Jellyfin
+###############################################################################
+
+# Let's not backup the media folder:
+/mnt/dietpi_userdata/jellyfin_media
+
+# Nor the metadata folder:
+/mnt/dietpi_userdata/jellyfin/metadata
+
+
+
+### Pi-Hole
 ###############################################################################
 
 # Let's ignore the whole folder, as we'll use teleporter for its backup:
@@ -25,7 +36,7 @@
 
 # Also... Skip the credentials.
 **/rails/*/config/*.key
-**/rails/*/config/credentials/*.ke
+**/rails/*/config/credentials/*.key
 
 # Same for gems/ruby versions installed on a per-user basis:
 /home/rails/*/.bundle
