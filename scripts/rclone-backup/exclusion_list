@@ -10,10 +10,10 @@
 ###############################################################################
 
 # Let's not backup the media folder:
-/mnt/dietpi_userdata/jellyfin_media
+**/dietpi_userdata/jellyfin_media
 
 # Nor the metadata folder:
-/mnt/dietpi_userdata/jellyfin/metadata
+**/dietpi_userdata/jellyfin/metadata
 
 
 
