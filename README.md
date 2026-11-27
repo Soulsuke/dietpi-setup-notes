@@ -561,19 +561,16 @@ available.
 
 The script is located in `scripts/rclone-backup` and it expects you to:  
  - copy `scripts/rclone-backup` to `/opt/rclone-backup`  
- - edit `rclone-backup.zsh`, look for the `Variables` section and set what fits
-   your needs. Most notably:  
-    - set `RCLONE_BIN=` to your rclone binary  
-    - set `RCLONE_REMOTE=` to use the right rclone remote to use  
-    - set `SERVICES_TO_STOP=` as the list of services to sop as data gets
-      copied  
-    - set `RSYNC_PATHS=` as the list of folders to copy over  
-    - set `TMPFS_SIZE=` so it won't kill your ram.  
+ - run it with `--help` to see the help reference, as it allows to override
+   some hardcoded values such as rclone's bin path, remote and others  
+ - feel free to edit any other variable at your own risk!  
 
 After that you can give the script a try, and if it works you can simply use
 the service and timer provided in `scripts/rclone-backup/systemd` folder to
 automate it:  
  - `sudo cp scripts/rclone-backup/systemd/* /etc/systemd/system`  
+ - be sure to edit the service's `ExecStart=` to match the right script path
+   and flags  
  - `sudo systemctl daemon-reload`  
  - `sudo enable --now rclone-backup.timer`  
 
