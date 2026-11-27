@@ -7,6 +7,9 @@
 # And it's better to also exclude the downloads folder:
 **/dietpi_userdata/Downloads
 
+# And docker data:
+**/dietpi_userdata/docker-data
+
 
 
 ### Jellyfin
